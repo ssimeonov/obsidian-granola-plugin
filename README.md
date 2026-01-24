@@ -1,0 +1,120 @@
+# Granola Simple for Obsidian
+
+Sync your [Granola](https://granola.ai) meeting notes to Obsidian.
+
+This plugin reads directly from Granola's local cache file—no API calls or authentication needed.
+
+## Features
+
+- **One-click sync**: Sync all your Granola meetings to Obsidian notes
+- **Template-based**: Customize output format with your own template
+- **Local-first**: Reads from Granola's local cache, no network requests
+- **Smart deduplication**: Tracks meetings by ID to avoid duplicates
+- **Preserve edits**: Option to skip existing notes so your local changes aren't overwritten
+
+## Installation
+
+### From Obsidian Community Plugins (Recommended)
+1. Open Settings → Community plugins
+2. Search for "Granola Simple"
+3. Click Install, then Enable
+
+### Manual Installation
+1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/philfreo/obsidian-granola-simple-plugin/releases)
+2. Create folder: `<vault>/.obsidian/plugins/granola-sync/`
+3. Copy both files into that folder
+4. Enable the plugin in Settings → Community plugins
+
+## Usage
+
+1. **Sync meetings**: Click the refresh icon in the left ribbon, or use command palette: "Granola Simple: Sync meetings"
+2. **Configure settings**: Settings → Granola Simple
+
+## Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Folder path | `Meetings` | Where to save meeting notes |
+| Filename pattern | `{date} {title}` | Pattern for filenames. Supports `{date}`, `{title}`, `{id}` |
+| Template path | `Templates/Granola.md` | Path to your template file |
+| Auto sync on startup | Off | Automatically sync when Obsidian opens |
+| Skip existing notes | On | Don't overwrite notes you've edited |
+
+## Template Variables
+
+Create a template file to customize how your meeting notes look. Use these variables:
+
+### Core
+- `{{granola_id}}` - Unique meeting ID
+- `{{granola_title}}` - Meeting title
+- `{{granola_date}}` - Date (YYYY-MM-DD)
+- `{{granola_created}}` - Created timestamp (ISO)
+- `{{granola_updated}}` - Updated timestamp (ISO)
+- `{{granola_url}}` - Link to meeting on Granola web
+
+### Content
+- `{{granola_private_notes}}` - Your notes from the meeting
+- `{{granola_enhanced_notes}}` - AI-generated content (Summary, Action Items, etc.)
+- `{{granola_transcript}}` - Full transcript formatted by speaker
+
+### Attendees
+- `{{granola_attendees}}` - Comma-separated names
+- `{{granola_attendees_linked}}` - With Obsidian links: `[[John]], [[Jane]]`
+- `{{granola_attendees_list}}` - YAML list format
+- `{{granola_attendees_linked_list}}` - YAML list with links
+
+### Time
+- `{{granola_start_time}}` - Start time (e.g., "10:30 AM")
+- `{{granola_end_time}}` - End time
+- `{{granola_duration}}` - Duration (e.g., "45 min")
+
+### Default Template
+
+If no template exists, the plugin creates this default:
+
+```markdown
+---
+granola_id: {{granola_id}}
+title: "{{granola_title}}"
+date: {{granola_date}}
+created: {{granola_created}}
+updated: {{granola_updated}}
+attendees:
+{{granola_attendees_linked_list}}
+tags:
+  - meeting
+  - granola
+---
+
+## Notes
+
+{{granola_private_notes}}
+
+{{granola_enhanced_notes}}
+
+## Transcript
+
+{{granola_transcript}}
+```
+
+## Requirements
+
+- **Desktop only**: This plugin uses Node.js file system access
+- **Granola installed**: The plugin reads from Granola's local cache file
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build (watch mode)
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## License
+
+MIT

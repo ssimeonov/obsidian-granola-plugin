@@ -1,0 +1,9 @@
+{
+	"id": "granola-simple-sync",
+	"name": "Granola Simple Sync",
+	"version": "1.0.0",
+	"minAppVersion": "1.0.0",
+	"description": "Sync your Granola meeting notes to Obsidian",
+	"author": "Phil Freo",
+	"isDesktopOnly": true
+}
