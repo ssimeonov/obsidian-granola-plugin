@@ -17,4 +17,5 @@ data.json
 main.js
 
 # Package output
+# Note: we would have to change/remove 'deploy-local' if we ever wanted to start committing this directory.
 release/
