@@ -46,15 +46,31 @@ export function parseMeetingsResponse(xml: string): ParsedMeetingDetails[] {
 		const participants = participantsMatch ? parseParticipants(participantsMatch[1].trim()) : [];
 
 		const notesMatch = body.match(/<private_notes>\s*([\s\S]*?)\s*<\/private_notes>/);
-		const privateNotes = notesMatch ? notesMatch[1].trim() : "";
+		const privateNotes = notesMatch ? restoreMarkdownLineBreaks(notesMatch[1].trim()) : "";
 
 		const summaryMatch = body.match(/<summary>\s*([\s\S]*?)\s*<\/summary>/);
-		const summary = summaryMatch ? summaryMatch[1].trim() : "";
+		const summary = summaryMatch ? restoreMarkdownLineBreaks(summaryMatch[1].trim()) : "";
 
 		meetings.push({ id, title, date, participants, privateNotes, summary });
 	}
 
 	return meetings;
+}
+
+/**
+ * Granola's MCP server strips newlines from markdown content in <private_notes>
+ * and <summary>, collapsing list items, headings, and paragraphs onto one line.
+ * Re-insert line breaks before block-level Markdown markers when they appear
+ * mid-line. Idempotent: already-multiline content is left alone because the
+ * lookbehind requires a non-whitespace char.
+ */
+function restoreMarkdownLineBreaks(text: string): string {
+	if (!text) return text;
+	return text
+		.replace(/([^\s#])(#{1,6} )/g, "$1\n\n$2")
+		.replace(/([^\s\-*+])([-*+] )/g, "$1\n$2")
+		.replace(/([^\s\d])(\d+\. )/g, "$1\n$2")
+		.replace(/([^\s>])(> )/g, "$1\n$2");
 }
 
 /**
